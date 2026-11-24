@@ -137,6 +137,14 @@ describe("OpenAPI-Beschreibung der REST-API", () => {
     expect(line.properties).not.toHaveProperty("discount");
   });
 
+  it("nennt für Angebotsentwürfe keine Vorgabe, die der Server nicht nimmt; ein Client, der sie mitschickt, überschriebe den Entwurf", () => {
+    // Anlegen: Kopftext aus den Textbausteinen, Steuer aus den Firmendaten, Sprache des Kontakts, nicht "", regulaer, de
+    const create = doc.components.schemas.QuoteDraftCreate as { properties: Record<string, object> };
+    for (const field of ["intro", "taxTreatment", "language"]) expect(create.properties[field], field).not.toHaveProperty("default");
+    // Ändern: ein ungenanntes Feld bleibt, wie es ist
+    expect(collect(doc.components.schemas.QuoteDraftPatch, "default")).toEqual([]);
+  });
+
   it("beschreibt Einheiten: Cent, Basispunkte, Tausendstel", () => {
     const line = doc.components.schemas.InvoiceLineInput as { properties: Record<string, { description?: string; type?: string }>; required: string[] };
     expect(line.properties.quantity!.description).toMatch(/Tausendsteln/);
