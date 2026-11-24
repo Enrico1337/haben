@@ -463,7 +463,7 @@ describe.skipIf(!testDatabaseUrl)("Angebote (Postgres)", () => {
       actor,
       draft({
         intro: "Herbstbuffet",
-        lines: [line(9500, 1900, 40_000), { ...line(5000, 700), kind: "optional" as const }],
+        lines: [line(9500, 1900, 40_000), { ...line(8500, 1900, 40_000), kind: "alternative" as const }, { ...line(5000, 700), kind: "optional" as const }],
         discount: { kind: "prozent", value: 500 },
         paymentPlan: [
           { label: "Anzahlung", share: { kind: "prozent", value: 3000 }, due: "Auftragserteilung" },
@@ -483,6 +483,7 @@ describe.skipIf(!testDatabaseUrl)("Angebote (Postgres)", () => {
     });
     expect((await quotes.getQuote(copy.id))!.lines.map((l) => [l.kind, l.unitPrice, l.quantity])).toEqual([
       [null, 9500, 40_000],
+      ["alternative", 8500, 40_000],
       ["optional", 5000, 1000],
     ]);
     expect((await quotes.getQuote(vorlage.id))!.quote).toMatchObject({ status: "draft", issueDate: "2026-10-01", intro: "Herbstbuffet" });
