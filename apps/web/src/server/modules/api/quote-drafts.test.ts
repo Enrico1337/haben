@@ -179,6 +179,47 @@ describe.skipIf(!testDatabaseUrl)("REST-API: Angebotsentwürfe anlegen, ändern 
     expect(stored.lines).toEqual([expect.objectContaining({ description: "Beratung", discountPercent: null, discountAmount: null })]);
   });
 
+  it("PATCH lässt jedes ungenannte Feld des Entwurfs stehen, auch die, die nur Haben setzt (quoteDraftInputOf)", async () => {
+    const mara = await stammdaten.createContactPerson(actor, contactId, { name: "Mara Beispiel" });
+    const created = await rechnungen.createQuoteDraft(
+      actor,
+      draft({
+        contactPersonId: mara,
+        serviceFrom: "2026-11-02",
+        serviceTo: "2026-11-27",
+        intro: "Wie besprochen:",
+        note: "Preise ab Werk.",
+        buyerOrderReference: "B-4711",
+        sellerOrderReference: "A-12",
+        despatchAdviceReference: "L-3",
+        taxDetails: { exemption: null, ancillary: null, foreignPlace: null, assetDisposal: true },
+        priceMode: "brutto",
+        language: "en",
+        discount: { kind: "prozent", value: 500 },
+        paymentPlan: [
+          { label: "Anzahlung", share: { kind: "prozent", value: 3000 }, due: "Auftragserteilung" },
+          { label: "Rest", share: { kind: "rest" }, due: "Abnahme" },
+        ],
+        paymentPlanInConfirmation: true,
+        lines: [line({ detail: "Vor Ort beim Kunden", itemNumber: "WS-8", arbeitskosten: true, discount: { kind: "prozent", value: 1000 } }), optional],
+      }) as never,
+    );
+    const before = (await rechnungen.getQuote(created.id))!;
+    const t = await token(["angebote:entwuerfe"]);
+
+    expect((await call(t, "PATCH", `/angebote/${created.id}`, { intro: "Wie am Telefon besprochen:" })).status).toBe(200);
+    const after = (await rechnungen.getQuote(created.id))!;
+    const { updatedAt: _updatedAt, ...kept } = before.quote;
+    expect(after.quote).toEqual({ ...kept, intro: "Wie am Telefon besprochen:", updatedAt: expect.any(Date) });
+    // updateQuoteDraft schreibt die Positionen neu, mit neuen IDs
+    const withoutId = ({ id: _id, ...rest }: (typeof before.lines)[number]) => rest;
+    expect(after.lines.map(withoutId)).toEqual(before.lines.map(withoutId));
+    // Ein Feld, das quoteDraftInputOf nicht mitnimmt, setzte jeder PATCH still auf seine Vorgabe zurück
+    const input = rechnungen.quoteDraftInputOf(after.quote, after.lines);
+    expect(Object.keys(input).sort()).toEqual(Object.keys(rechnungen.quoteDraftSchema.shape).sort());
+    expect(Object.keys(input.lines[0]!).sort()).toEqual(Object.keys(rechnungen.quoteDraftSchema.shape.lines.element.shape).sort());
+  });
+
   it("passen Gesamtrabatt oder Zahlungsplan aus Haben nicht zu den neuen Positionen, antwortet PATCH mit 409 und der Entwurf bleibt", async () => {
     const t = await token(["angebote:entwuerfe"]);
     const smaller = { lines: [{ description: "Beratung", quantity: 1000, unit: "Psch.", unitPrice: 5_000, taxRate: 1900 }] };
