@@ -32,7 +32,7 @@ Einleitung, Texte zu Positionen und Hinweis unterstützen [fett, kursiv und unte
 - optional ein **Zahlungsplan** (siehe unten)
 - optional **Anhänge**: weitere PDF-Dateien wie AGB oder eine Leistungsbeschreibung (siehe unten)
 
-**Vorschau** im Kopf zeigt das Angebot, von rechts über das Formular oder neben ihm angeheftet ([wie bei der Rechnung](rechnungen.md#vorschau)). Der Entwurf lässt sich beliebig speichern, ändern und löschen. **Kopieren** speichert, was noch nicht gespeichert ist, und legt daraus einen neuen Entwurf an, mit denselben Angaben wie beim Kopieren eines festgeschriebenen Angebots (unten); so lässt sich ein Entwurf als Vorlage für ähnliche Angebote aufheben. **Entwurf als PDF** lädt ihn als PDF aus der Vorlage des festgeschriebenen Angebots, mit „ENTWURF“ über jeder Seite und statt der Nummer, ohne eine Nummer zu vergeben ([wie bei der Rechnung](rechnungen.md#entwurf-als-pdf)).
+**Vorschau** im Kopf zeigt das Angebot, von rechts über das Formular oder neben ihm angeheftet ([wie bei der Rechnung](rechnungen.md#vorschau)). Der Entwurf lässt sich beliebig speichern, ändern und löschen. **Kopieren** speichert, was noch nicht gespeichert ist, und legt daraus einen neuen Entwurf an, mit denselben Angaben wie beim Kopieren eines festgeschriebenen Angebots (unten); so lässt sich ein Entwurf als Vorlage für ähnliche Angebote aufheben, dann erst kopieren und in der Kopie ändern. **Entwurf als PDF** lädt ihn als PDF aus der Vorlage des festgeschriebenen Angebots, mit „ENTWURF“ über jeder Seite und statt der Nummer, ohne eine Nummer zu vergeben ([wie bei der Rechnung](rechnungen.md#entwurf-als-pdf)).
 
 ### Optionale und alternative Positionen
 

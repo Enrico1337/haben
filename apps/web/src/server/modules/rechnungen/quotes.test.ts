@@ -462,7 +462,7 @@ describe.skipIf(!testDatabaseUrl)("Angebote (Postgres)", () => {
     const vorlage = await quotes.createQuoteDraft(
       actor,
       draft({
-        intro: "Herbstbuffet",
+        intro: "Wartungspaket",
         lines: [line(9500, 1900, 40_000), { ...line(8500, 1900, 40_000), kind: "alternative" as const }, { ...line(5000, 700), kind: "optional" as const }],
         discount: { kind: "prozent", value: 500 },
         paymentPlan: [
@@ -476,7 +476,7 @@ describe.skipIf(!testDatabaseUrl)("Angebote (Postgres)", () => {
       status: "draft",
       issueDate: "2026-12-01",
       validUntil: "2026-12-31",
-      intro: "Herbstbuffet",
+      intro: "Wartungspaket",
       net: vorlage.net,
       discountPercent: 500,
       paymentPlan: vorlage.paymentPlan,
@@ -486,6 +486,6 @@ describe.skipIf(!testDatabaseUrl)("Angebote (Postgres)", () => {
       ["alternative", 8500, 40_000],
       ["optional", 5000, 1000],
     ]);
-    expect((await quotes.getQuote(vorlage.id))!.quote).toMatchObject({ status: "draft", issueDate: "2026-10-01", intro: "Herbstbuffet" });
+    expect((await quotes.getQuote(vorlage.id))!.quote).toMatchObject({ status: "draft", issueDate: "2026-10-01", intro: "Wartungspaket" });
   });
 });

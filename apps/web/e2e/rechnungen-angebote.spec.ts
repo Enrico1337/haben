@@ -1025,7 +1025,7 @@ test("Angebotsentwurf kopieren: die Kopie hat Positionen und Ungespeichertes, de
   await go("/angebote/neu");
   // Kopieren prüft vorher die Angaben wie beim Rechnungsentwurf, auch den Kunden
   await kundeWaehlen(page);
-  await page.getByLabel("Beschreibung Position 1").fill("Herbstbuffet");
+  await page.getByLabel("Beschreibung Position 1").fill("Wartungspaket");
   await page.getByLabel("Menge Position 1").fill("40");
   await page.getByLabel(/Einzelpreis Position 1/).fill("12,50");
   // Ein noch nie gespeichertes Angebot hat nichts zum Kopieren
@@ -1035,14 +1035,14 @@ test("Angebotsentwurf kopieren: die Kopie hat Positionen und Ungespeichertes, de
   await page.waitForLoadState("networkidle");
 
   const vorlage = page.url();
-  await page.getByLabel("Beschreibung Position 1").fill("Herbstbuffet für 50 Personen");
+  await page.getByLabel("Beschreibung Position 1").fill("Wartungspaket für 50 Geräte");
   await page.getByRole("button", { name: "Kopieren", exact: true }).click();
   await page.waitForURL((url) => /\/angebote\/[0-9a-f-]{36}$/.test(url.pathname) && url.href !== vorlage);
-  await expect(page.getByLabel("Beschreibung Position 1")).toHaveValue("Herbstbuffet für 50 Personen");
+  await expect(page.getByLabel("Beschreibung Position 1")).toHaveValue("Wartungspaket für 50 Geräte");
   await expect(page.getByLabel(/Einzelpreis Position 1/)).toHaveValue("12,50");
   await expect(page.getByRole("button", { name: "Festschreiben", exact: true }).first()).toBeVisible();
   await page.goto(vorlage);
-  await expect(page.getByLabel("Beschreibung Position 1")).toHaveValue("Herbstbuffet für 50 Personen");
+  await expect(page.getByLabel("Beschreibung Position 1")).toHaveValue("Wartungspaket für 50 Geräte");
 });
 
 test("Kontaktseite: Zeiteinträge des Kunden erfassen und ansehen, Rechnung mit diesem Kunden schreiben (#1557)", async () => {
