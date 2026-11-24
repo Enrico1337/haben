@@ -1,8 +1,8 @@
 ---
 title: "REST-API für Kontakte, Artikel, Rechnungsentwürfe, Angebote und Bankumsätze"
 description: >-
-  Kontakte, Katalogartikel, Rechnungs- und Angebotsentwürfe aus eigenen Werkzeugen über die REST-API in Haben pflegen
-  und Bankumsätze aus eigenen Diensten liefern.
+  Kontakte, Artikel, Rechnungs- und Angebotsentwürfe aus eigenen Werkzeugen über die REST-API in Haben pflegen
+  und Bankumsätze liefern.
   Mit OpenAPI-Beschreibung.
 ---
 
