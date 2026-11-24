@@ -23,23 +23,35 @@ const quoteLineInputSchema = lineInputSchema
   .strict()
   .register(requestSchemas, { id: "QuoteLineInput" });
 
-/** Felder eines Entwurfs, die die API annimmt; Rabatte, Zahlungsplan und Ansprechpartner bleiben der Oberfläche vorbehalten */
+/**
+ * Felder eines Entwurfs, die die API annimmt; Rabatte, Zahlungsplan und Ansprechpartner bleiben der Oberfläche vorbehalten.
+ * Ohne die Vorgaben aus quoteDraftSchema (removeDefault): Beim Anlegen setzt der Server eigene (Textbausteine, Firmendaten,
+ * Sprache des Kontakts), beim Ändern bleibt ein ungenanntes Feld stehen. Als default in der OpenAPI-Beschreibung stimmten sie
+ * nicht, und ein Client, der sie mitschickt, setzte den Entwurf zurück.
+ */
 const quoteDraftApiFields = {
   contactId: quoteFields.contactId.describe("Kontakt aus /kontakte mit der Rolle Kunde; null = noch ohne Kunde"),
   issueDate: quoteFields.issueDate.describe("Angebotsdatum JJJJ-MM-TT, Vorgabe heute"),
   validUntil: quoteFields.validUntil.describe(`Gültig bis einschließlich, JJJJ-MM-TT; Vorgabe ${QUOTE_VALID_DAYS} Tage nach dem Angebotsdatum`),
   serviceFrom: quoteFields.serviceFrom,
   serviceTo: quoteFields.serviceTo,
-  intro: quoteFields.intro.describe("Kopftext über den Positionen, Vorgabe: Standard-Kopftext für Angebote aus den Textbausteinen"),
+  intro: quoteFields.intro.removeDefault().describe("Kopftext über den Positionen, Vorgabe: Standard-Kopftext für Angebote aus den Textbausteinen"),
   note: quoteFields.note.describe("Fußtext unter den Summen, Vorgabe: Standard-Fußtext für Angebote aus den Textbausteinen"),
-  buyerOrderReference: quoteFields.buyerOrderReference.describe("Bestellnummer des Kunden, geht in die Rechnung aus dem Angebot über; leer = keine"),
-  sellerOrderReference: quoteFields.sellerOrderReference.describe("Eigene Auftragsnummer, geht in die Rechnung aus dem Angebot über; leer = keine"),
-  despatchAdviceReference: quoteFields.despatchAdviceReference.describe("Lieferscheinnummer, geht in die Rechnung aus dem Angebot über; leer = keine"),
-  taxTreatment: quoteFields.taxTreatment,
-  exemptionReason: quoteFields.exemptionReason,
-  taxDetails: quoteFields.taxDetails,
-  priceMode: quoteFields.priceMode.describe("Einzelpreise netto oder brutto inkl. USt"),
-  language: quoteFields.language.describe("Sprache des PDFs, Vorgabe die des Kontakts"),
+  buyerOrderReference: quoteFields.buyerOrderReference
+    .removeDefault()
+    .describe("Bestellnummer des Kunden, geht in die Rechnung aus dem Angebot über; leer = keine"),
+  sellerOrderReference: quoteFields.sellerOrderReference
+    .removeDefault()
+    .describe("Eigene Auftragsnummer, geht in die Rechnung aus dem Angebot über; leer = keine"),
+  despatchAdviceReference: quoteFields.despatchAdviceReference
+    .removeDefault()
+    .describe("Lieferscheinnummer, geht in die Rechnung aus dem Angebot über; leer = keine"),
+  taxTreatment: quoteFields.taxTreatment.removeDefault().describe("Umsatzsteuer des Angebots, Vorgabe aus den Firmendaten"),
+  exemptionReason: quoteFields.exemptionReason.removeDefault(),
+  // Die Beschreibung hängt an der Vorgabe; removeDefault gibt das Schema darunter zurück
+  taxDetails: quoteFields.taxDetails.removeDefault().describe(quoteFields.taxDetails.description!),
+  priceMode: quoteFields.priceMode.removeDefault().describe("Einzelpreise netto oder brutto inkl. USt, Vorgabe netto"),
+  language: quoteFields.language.removeDefault().describe("Sprache des PDFs, Vorgabe die des Kontakts"),
   lines: z.array(quoteLineInputSchema).min(1, "Mindestens eine Position").max(200),
 };
 
